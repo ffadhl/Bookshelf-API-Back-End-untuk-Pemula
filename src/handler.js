@@ -1,8 +1,8 @@
 const { nanoid } = require('nanoid')
-const bookshelf = require('./bookshelf')
+const bookshelf = require('./books')
 
 // TAMBAH
-const tambahBooksHandler = (request, h) => {
+const addBooksHandler = (request, h) => {
   const {
     name,
     year,
@@ -69,7 +69,7 @@ const tambahBooksHandler = (request, h) => {
       status: 'success',
       message: 'Buku berhasil ditambahkan',
       data: {
-        idBuku: id
+        bookId: id
       }
     })
     response.code(201)
@@ -84,7 +84,7 @@ const tambahBooksHandler = (request, h) => {
 }
 
 // GET ALL
-const getAllBookshelfHandler = (request, h) => {
+const getAllBooksHandler = (request, h) => {
   const { name, reading, finished } = request.query
 
   if (name) {
@@ -93,7 +93,7 @@ const getAllBookshelfHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        bookshelf: bookshelf
+        books: bookshelf
           .filter((n) => n.name === lowName)
           .map((books) => ({
             id: books.id,
@@ -127,7 +127,7 @@ const getAllBookshelfHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        bookshelf: bookshelf
+        books: bookshelf
           .filter((r) => r.reading === false)
           .map((books) => ({
             id: books.id,
@@ -144,7 +144,7 @@ const getAllBookshelfHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        bookshelf: bookshelf
+        books: bookshelf
           .filter((f) => f.finished === true)
           .map((books) => ({
             id: books.id,
@@ -161,7 +161,7 @@ const getAllBookshelfHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        bookshelf: bookshelf
+        books: bookshelf
           .filter((f) => f.finished === false)
           .map((books) => ({
             id: books.id,
@@ -177,7 +177,7 @@ const getAllBookshelfHandler = (request, h) => {
   const response = h.response({
     status: 'success',
     data: {
-      bookshelf: bookshelf.map((m) => ({
+      books: bookshelf.map((m) => ({
         id: m.id,
         name: m.name,
         publisher: m.publisher
@@ -189,10 +189,10 @@ const getAllBookshelfHandler = (request, h) => {
 }
 
 // GET BY ID
-const getByIdBookshelfHandler = (request, h) => {
-  const { idBuku } = request.params
+const getByIdBooksHandler = (request, h) => {
+  const { bookId } = request.params
 
-  const book = bookshelf.filter((book) => book.id === idBuku)[0]
+  const book = bookshelf.filter((book) => book.id === bookId)[0]
   if (book !== undefined) {
     return {
       status: 'success',
@@ -210,8 +210,8 @@ const getByIdBookshelfHandler = (request, h) => {
 }
 
 // EDIT
-const editBookshelfHandler = (request, h) => {
-  const { idBuku } = request.params
+const editBooksHandler = (request, h) => {
+  const { bookId } = request.params
 
   const {
     name,
@@ -245,7 +245,7 @@ const editBookshelfHandler = (request, h) => {
 
   const updatedAt = new Date().toISOString()
 
-  const index = bookshelf.findIndex((book) => book.id === idBuku)
+  const index = bookshelf.findIndex((book) => book.id === bookId)
 
   if (index !== -1) {
     bookshelf[index] = {
@@ -276,10 +276,10 @@ const editBookshelfHandler = (request, h) => {
 }
 
 // DELETE
-const hapusBookshelfHandler = (request, h) => {
-  const { idBuku } = request.params
+const deleteBooksHandler = (request, h) => {
+  const { bookId } = request.params
 
-  const index = bookshelf.findIndex((book) => book.id === idBuku)
+  const index = bookshelf.findIndex((book) => book.id === bookId)
 
   if (index !== -1) {
     bookshelf.splice(index, 1)
@@ -300,9 +300,9 @@ const hapusBookshelfHandler = (request, h) => {
 }
 
 module.exports = {
-  tambahBooksHandler,
-  getAllBookshelfHandler,
-  getByIdBookshelfHandler,
-  editBookshelfHandler,
-  hapusBookshelfHandler
+  addBooksHandler,
+  getAllBooksHandler,
+  getByIdBooksHandler,
+  editBooksHandler,
+  deleteBooksHandler
 }
